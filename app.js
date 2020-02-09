@@ -9,10 +9,17 @@ const svg = d3
 
 const path = d3.geoPath();
 
-d3.json(
+const countiesTopoDataPromise = d3.json(
   'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json'
-)
-  .then(countiesTopoData => {
+);
+const countiesEducationDataPromise = d3.json(
+  'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json'
+);
+
+Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
+  .then(values => {
+    const countiesTopoData = values[0];
+    const countiesEducationData = values[1];
     // convert data from topojson to geojson format
     const geojson = topojson.feature(
       countiesTopoData,
@@ -25,6 +32,8 @@ d3.json(
       .enter()
       .append('path')
       .attr('d', path)
-      .attr('class', 'county');
+      .attr('class', 'county')
+      .attr('data-fips', '')
+      .attr('data-education', '');
   })
   .catch(() => alert('An error occurred!'));
