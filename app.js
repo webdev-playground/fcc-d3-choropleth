@@ -1,5 +1,5 @@
 const width = 1000;
-const height = 1100;
+const height = 650;
 
 const svg = d3
   .select('#map')
@@ -24,6 +24,12 @@ const eduColorScale = d3
   .scaleThreshold()
   .domain(d3.range(minBachelorPct, maxBachelorPct, numThresholds))
   .range(d3.schemeBlues[numColors]);
+
+const tooltip = d3
+  .select('#map')
+  .append('div')
+  .attr('id', 'tooltip')
+  .style('display', 'none');
 
 Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
   .then(values => {
@@ -51,6 +57,23 @@ Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
       .attr('data-education', d => eduIdMap.get(d.id).bachelorsOrHigher)
       .attr('d', path)
       .attr('class', 'county')
-      .attr('fill', d => eduColorScale(eduIdMap.get(d.id).bachelorsOrHigher));
+      .attr('fill', d => eduColorScale(eduIdMap.get(d.id).bachelorsOrHigher))
+      .on('mouseover', d => {
+        tooltip
+          .style('display', 'block')
+          .attr('data-education', eduIdMap.get(d.id).bachelorsOrHigher)
+          .html(() => {
+            const eduData = eduIdMap.get(d.id);
+            const {
+              area_name: countyName,
+              state: countyCode,
+              bachelorsOrHigher: degreePct,
+            } = eduData;
+            return `<div>${countyName}, ${countyCode}: ${degreePct}%</div>`;
+          });
+      })
+      .on('mouseout', d => {
+        tooltip.style('display', 'none');
+      });
   })
   .catch(() => alert('An error occurred!'));
