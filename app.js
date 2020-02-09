@@ -12,11 +12,11 @@ const path = d3.geoPath();
 d3.json(
   'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/counties.json'
 )
-  .then(countiesData => {
+  .then(countiesTopoData => {
     // convert data from topojson to geojson format
     const geojson = topojson.feature(
-      countiesData,
-      countiesData.objects.counties
+      countiesTopoData,
+      countiesTopoData.objects.counties
     );
     console.log(geojson.features);
     svg
