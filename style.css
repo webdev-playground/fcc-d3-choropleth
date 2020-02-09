@@ -6,7 +6,7 @@
   text-align: center;
 }
 
-svg {
-  display: block;
-  margin: 0 auto;
+#map {
+  display: flex;
+  justify-content: center;
 }
