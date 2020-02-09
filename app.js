@@ -24,6 +24,7 @@ d3.json(
       .data(geojson.features)
       .enter()
       .append('path')
-      .attr('d', path);
+      .attr('d', path)
+      .attr('class', 'county');
   })
   .catch(() => alert('An error occurred!'));
