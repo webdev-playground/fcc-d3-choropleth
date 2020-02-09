@@ -16,6 +16,15 @@ const countiesEducationDataPromise = d3.json(
   'https://cdn.freecodecamp.org/testable-projects-fcc/data/choropleth_map/for_user_education.json'
 );
 
+const minBachelorPct = 0;
+const maxBachelorPct = 100;
+const numColors = 8;
+const numThresholds = numColors - 1;
+const eduColorScale = d3
+  .scaleThreshold()
+  .domain(d3.range(minBachelorPct, maxBachelorPct, numThresholds))
+  .range(d3.schemeBlues[numColors]);
+
 Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
   .then(values => {
     const countiesTopoData = values[0];
@@ -41,6 +50,7 @@ Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
       .attr('data-fips', d => d.id)
       .attr('data-education', d => eduIdMap.get(d.id).bachelorsOrHigher)
       .attr('d', path)
-      .attr('class', 'county');
+      .attr('class', 'county')
+      .attr('fill', d => eduColorScale(eduIdMap.get(d.id).bachelorsOrHigher));
   })
   .catch(() => alert('An error occurred!'));
