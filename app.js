@@ -20,20 +20,27 @@ Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
   .then(values => {
     const countiesTopoData = values[0];
     const countiesEducationData = values[1];
+
     // convert data from topojson to geojson format
     const geojson = topojson.feature(
       countiesTopoData,
       countiesTopoData.objects.counties
     );
-    console.log(geojson.features);
+
+    // map fips value to county education data for quick retrieval
+    const eduIdMap = new Map();
+    countiesEducationData.forEach(data => {
+      eduIdMap.set(data.fips, data);
+    });
+
     svg
       .selectAll('path')
       .data(geojson.features)
       .enter()
       .append('path')
+      .attr('data-fips', d => d.id)
+      .attr('data-education', d => eduIdMap.get(d.id).bachelorsOrHigher)
       .attr('d', path)
-      .attr('class', 'county')
-      .attr('data-fips', '')
-      .attr('data-education', '');
+      .attr('class', 'county');
   })
   .catch(() => alert('An error occurred!'));
