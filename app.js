@@ -1,5 +1,5 @@
-const width = 1000;
-const height = 650;
+const width = 1200;
+const height = 1050;
 
 const svg = d3
   .select('#map')
@@ -31,6 +31,24 @@ const tooltip = d3
   .attr('id', 'tooltip')
   .style('display', 'none');
 
+// Draw Legend
+const colorLegend = d3
+  .legendColor()
+  .scale(eduColorScale)
+  .cells(numColors)
+  .shapeWidth(30)
+  .labelFormat(d3.format('.0f'))
+  .labels(d3.legendHelpers.thresholdLabels)
+  .orient('vertical');
+
+svg
+  .append('g')
+  .attr('id', 'legend')
+  .attr('transform', `translate(${width - 200},${200})`);
+
+svg.select('#legend').call(colorLegend);
+
+// Draw Map
 Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
   .then(values => {
     const countiesTopoData = values[0];
