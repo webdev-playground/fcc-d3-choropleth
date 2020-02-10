@@ -62,6 +62,8 @@ Promise.all([countiesTopoDataPromise, countiesEducationDataPromise])
         tooltip
           .style('display', 'block')
           .attr('data-education', eduIdMap.get(d.id).bachelorsOrHigher)
+          .style('left', d3.event.pageX + 5 + 'px')
+          .style('top', d3.event.pageY - 30 + 'px')
           .html(() => {
             const eduData = eduIdMap.get(d.id);
             const {
